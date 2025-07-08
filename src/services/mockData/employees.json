@@ -9,7 +9,34 @@
     "departmentId": "1",
     "startDate": "2022-03-15",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1494790108755-2616b9c8e9b0?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1494790108755-2616b9c8e9b0?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456789",
+        "name": "programming_skills",
+        "label": "Programming Skills",
+        "type": "multiselect",
+        "required": false,
+        "options": ["JavaScript", "React", "Node.js", "Python", "SQL"],
+        "value": ["JavaScript", "React", "Node.js"]
+      },
+      {
+        "id": "1647123456790",
+        "name": "certifications",
+        "label": "Certifications",
+        "type": "text",
+        "required": false,
+        "value": "AWS Certified Developer, Scrum Master"
+      },
+      {
+        "id": "1647123456791",
+        "name": "remote_work",
+        "label": "Remote Work Preference",
+        "type": "boolean",
+        "required": false,
+        "value": true
+      }
+    ]
   },
   {
     "Id": 2,
@@ -21,7 +48,26 @@
     "departmentId": "2",
     "startDate": "2021-08-20",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456792",
+        "name": "languages",
+        "label": "Languages Spoken",
+        "type": "multiselect",
+        "required": false,
+        "options": ["English", "Mandarin", "Spanish", "French"],
+        "value": ["English", "Mandarin"]
+      },
+      {
+        "id": "1647123456793",
+        "name": "experience_years",
+        "label": "Years of Experience",
+        "type": "number",
+        "required": false,
+        "value": 8
+      }
+    ]
   },
   {
     "Id": 3,
@@ -33,7 +79,26 @@
     "departmentId": "3",
     "startDate": "2023-01-10",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456794",
+        "name": "design_tools",
+        "label": "Design Tools",
+        "type": "multiselect",
+        "required": false,
+        "options": ["Figma", "Sketch", "Adobe XD", "Photoshop", "Illustrator"],
+        "value": ["Figma", "Adobe XD", "Photoshop"]
+      },
+      {
+        "id": "1647123456795",
+        "name": "portfolio_url",
+        "label": "Portfolio URL",
+        "type": "text",
+        "required": false,
+        "value": "https://emilyrodriguez.design"
+      }
+    ]
   },
   {
     "Id": 4,
@@ -45,7 +110,26 @@
     "departmentId": "1",
     "startDate": "2022-11-05",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456796",
+        "name": "cloud_platforms",
+        "label": "Cloud Platforms",
+        "type": "multiselect",
+        "required": false,
+        "options": ["AWS", "Azure", "Google Cloud", "DigitalOcean"],
+        "value": ["AWS", "Azure"]
+      },
+      {
+        "id": "1647123456797",
+        "name": "on_call_availability",
+        "label": "On-Call Availability",
+        "type": "boolean",
+        "required": false,
+        "value": true
+      }
+    ]
   },
   {
     "Id": 5,
@@ -57,7 +141,27 @@
     "departmentId": "4",
     "startDate": "2021-06-12",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456798",
+        "name": "marketing_channels",
+        "label": "Marketing Channels",
+        "type": "multiselect",
+        "required": false,
+        "options": ["Social Media", "Email", "SEO", "PPC", "Content Marketing"],
+        "value": ["Social Media", "Email", "Content Marketing"]
+      },
+      {
+        "id": "1647123456799",
+        "name": "budget_responsibility",
+        "label": "Budget Responsibility",
+        "type": "select",
+        "required": false,
+        "options": ["Under $50k", "$50k-$100k", "$100k-$500k", "Over $500k"],
+        "value": "$100k-$500k"
+      }
+    ]
   },
   {
     "Id": 6,
@@ -69,7 +173,18 @@
     "departmentId": "5",
     "startDate": "2023-04-18",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456800",
+        "name": "sales_territory",
+        "label": "Sales Territory",
+        "type": "select",
+        "required": false,
+        "options": ["North America", "Europe", "Asia Pacific", "Latin America"],
+        "value": "North America"
+      }
+    ]
   },
   {
     "Id": 7,
@@ -81,7 +196,26 @@
     "departmentId": "6",
     "startDate": "2022-09-22",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456801",
+        "name": "hr_specializations",
+        "label": "HR Specializations",
+        "type": "multiselect",
+        "required": false,
+        "options": ["Recruitment", "Benefits", "Training", "Performance Management", "Employee Relations"],
+        "value": ["Recruitment", "Benefits", "Training"]
+      },
+      {
+        "id": "1647123456802",
+        "name": "shrm_certified",
+        "label": "SHRM Certified",
+        "type": "boolean",
+        "required": false,
+        "value": true
+      }
+    ]
   },
   {
     "Id": 8,
@@ -93,7 +227,18 @@
     "departmentId": "1",
     "startDate": "2023-02-28",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456803",
+        "name": "frontend_frameworks",
+        "label": "Frontend Frameworks",
+        "type": "multiselect",
+        "required": false,
+        "options": ["React", "Vue.js", "Angular", "Svelte"],
+        "value": ["React", "Vue.js"]
+      }
+    ]
   },
   {
     "Id": 9,
@@ -105,7 +250,8 @@
     "departmentId": "4",
     "startDate": "2022-07-14",
     "status": "inactive",
-    "photoUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face",
+    "customFields": []
   },
   {
     "Id": 10,
@@ -117,6 +263,25 @@
     "departmentId": "2",
     "startDate": "2021-12-03",
     "status": "active",
-    "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face"
+    "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+    "customFields": [
+      {
+        "id": "1647123456804",
+        "name": "analysis_tools",
+        "label": "Analysis Tools",
+        "type": "multiselect",
+        "required": false,
+        "options": ["Excel", "Tableau", "Power BI", "SQL", "Python"],
+        "value": ["Excel", "Tableau", "SQL"]
+      },
+      {
+        "id": "1647123456805",
+        "name": "industry_experience",
+        "label": "Industry Experience",
+        "type": "text",
+        "required": false,
+        "value": "Finance, Healthcare, Technology"
+      }
+    ]
   }
 ]

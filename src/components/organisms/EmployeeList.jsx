@@ -218,7 +218,7 @@ return (
         <div className={viewMode === 'cards' ? 
           "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" : 
           "space-y-4"
-        }>
+}>
           {filteredEmployees.map(employee => (
             <EmployeeCard 
               key={employee.Id}
@@ -226,6 +226,14 @@ return (
               onView={() => toast.info('View employee details coming soon!')}
               onEdit={() => toast.info('Edit employee functionality coming soon!')}
               onDelete={handleDelete}
+              onEmployeeUpdate={(updatedEmployee) => {
+                setEmployees(prev => 
+                  prev.map(emp => emp.Id === updatedEmployee.Id ? updatedEmployee : emp)
+                );
+                setFilteredEmployees(prev => 
+                  prev.map(emp => emp.Id === updatedEmployee.Id ? updatedEmployee : emp)
+                );
+              }}
             />
           ))}
         </div>

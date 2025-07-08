@@ -1,3 +1,5 @@
+import React from "react";
+import Error from "@/components/ui/Error";
 import employeesData from "@/services/mockData/employees.json";
 
 class EmployeeService {
@@ -179,11 +181,144 @@ async search(query) {
           return;
         }
         
-        const employees = this.employees.filter(emp => emp.departmentId === departmentId.toString());
+const employees = this.employees.filter(emp => emp.departmentId === departmentId.toString());
         resolve([...employees]);
       }, 250);
     });
   }
-}
 
-export default new EmployeeService();
+  async addCustomField(employeeId, fieldDefinition) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const index = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
+        if (index === -1) {
+          reject(new Error('Employee not found'));
+          return;
+        }
+
+        const employee = this.employees[index];
+        if (!employee.customFields) {
+          employee.customFields = [];
+        }
+
+        // Check if field name already exists
+        if (employee.customFields.some(field => field.name === fieldDefinition.name)) {
+          reject(new Error('Field name already exists'));
+          return;
+        }
+
+        const newField = {
+          ...fieldDefinition,
+          id: Date.now().toString(),
+          value: fieldDefinition.type === 'boolean' ? false : 
+                 fieldDefinition.type === 'multiselect' ? [] : ''
+        };
+
+        employee.customFields.push(newField);
+        resolve({ ...employee });
+      }, 300);
+    });
+  }
+
+  async updateCustomField(employeeId, fieldId, updates) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const employeeIndex = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
+        if (employeeIndex === -1) {
+          reject(new Error('Employee not found'));
+          return;
+        }
+
+        const employee = this.employees[employeeIndex];
+        if (!employee.customFields) {
+          reject(new Error('No custom fields found'));
+          return;
+        }
+
+        const fieldIndex = employee.customFields.findIndex(field => field.id === fieldId);
+        if (fieldIndex === -1) {
+          reject(new Error('Custom field not found'));
+          return;
+        }
+
+        // Check if updating name and it conflicts with existing
+        if (updates.name && updates.name !== employee.customFields[fieldIndex].name) {
+          if (employee.customFields.some(field => field.name === updates.name && field.id !== fieldId)) {
+            reject(new Error('Field name already exists'));
+            return;
+          }
+        }
+
+        employee.customFields[fieldIndex] = { ...employee.customFields[fieldIndex], ...updates };
+        resolve({ ...employee });
+      }, 300);
+    });
+  }
+
+  async removeCustomField(employeeId, fieldId) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const employeeIndex = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
+        if (employeeIndex === -1) {
+          reject(new Error('Employee not found'));
+          return;
+        }
+
+        const employee = this.employees[employeeIndex];
+        if (!employee.customFields) {
+          reject(new Error('No custom fields found'));
+          return;
+        }
+
+        const fieldIndex = employee.customFields.findIndex(field => field.id === fieldId);
+        if (fieldIndex === -1) {
+          reject(new Error('Custom field not found'));
+          return;
+        }
+
+        employee.customFields.splice(fieldIndex, 1);
+        resolve({ ...employee });
+      }, 250);
+    });
+  }
+
+  async updateFieldValue(employeeId, fieldId, value) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const employeeIndex = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
+        if (employeeIndex === -1) {
+          reject(new Error('Employee not found'));
+          return;
+        }
+
+        const employee = this.employees[employeeIndex];
+        if (!employee.customFields) {
+          reject(new Error('No custom fields found'));
+          return;
+        }
+
+        const fieldIndex = employee.customFields.findIndex(field => field.id === fieldId);
+        if (fieldIndex === -1) {
+          reject(new Error('Custom field not found'));
+          return;
+        }
+
+        employee.customFields[fieldIndex].value = value;
+        resolve({ ...employee });
+      }, 200);
+    });
+  }
+
+  async getEmployeeWithFields(employeeId) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const employee = this.employees.find(emp => emp.Id === parseInt(employeeId));
+        if (employee) {
+          resolve({ ...employee });
+        } else {
+          reject(new Error('Employee not found'));
+        }
+      }, 200);
+    });
+  }
+}
