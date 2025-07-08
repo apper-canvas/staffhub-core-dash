@@ -1,5 +1,4 @@
-import tasksData from '@/services/mockData/tasks.json';
-
+import tasksData from "@/services/mockData/tasks.json";
 class TaskService {
   constructor() {
     this.tasks = [...tasksData];
@@ -87,4 +86,5 @@ class TaskService {
   }
 }
 
+// Create and export singleton instance
 export default new TaskService();

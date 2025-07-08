@@ -309,7 +309,7 @@ const employees = this.employees.filter(emp => emp.departmentId === departmentId
     });
   }
 
-  async getEmployeeWithFields(employeeId) {
+async getEmployeeWithFields(employeeId) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const employee = this.employees.find(emp => emp.Id === parseInt(employeeId));
@@ -322,3 +322,7 @@ const employees = this.employees.filter(emp => emp.departmentId === departmentId
     });
   }
 }
+
+// Create and export singleton instance
+const employeeService = new EmployeeService();
+export default employeeService;

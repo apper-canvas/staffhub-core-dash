@@ -1,4 +1,6 @@
-import reviewsData from '@/services/mockData/reviews.json';
+import React from "react";
+import Error from "@/components/ui/Error";
+import reviewsData from "@/services/mockData/reviews.json";
 
 class ReviewService {
   constructor() {

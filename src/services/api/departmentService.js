@@ -1,4 +1,6 @@
-import departmentsData from '@/services/mockData/departments.json';
+import React from "react";
+import Error from "@/components/ui/Error";
+import departmentsData from "@/services/mockData/departments.json";
 
 class DepartmentService {
   constructor() {
