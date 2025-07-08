@@ -1,0 +1,92 @@
+[
+  {
+    "Id": 1,
+    "employeeId": "1",
+    "reviewerId": "2",
+    "period": "Q4 2023",
+    "ratings": {
+      "technical": 4.5,
+      "communication": 4.0,
+      "teamwork": 4.2,
+      "initiative": 4.3,
+      "overall": 4.25
+    },
+    "comments": "Sarah consistently delivers high-quality work and shows great leadership potential. Her technical skills are excellent and she mentors junior developers effectively.",
+    "status": "completed"
+  },
+  {
+    "Id": 2,
+    "employeeId": "2",
+    "reviewerId": "1",
+    "period": "Q4 2023",
+    "ratings": {
+      "leadership": 4.8,
+      "communication": 4.5,
+      "strategy": 4.6,
+      "execution": 4.4,
+      "overall": 4.58
+    },
+    "comments": "Michael demonstrates exceptional leadership and strategic thinking. His ability to coordinate cross-functional teams is outstanding.",
+    "status": "completed"
+  },
+  {
+    "Id": 3,
+    "employeeId": "3",
+    "reviewerId": "2",
+    "period": "Q4 2023",
+    "ratings": {
+      "creativity": 4.7,
+      "technical": 4.2,
+      "collaboration": 4.0,
+      "delivery": 4.1,
+      "overall": 4.25
+    },
+    "comments": "Emily brings fresh perspectives to design challenges and works well with the development team. Her user-centered approach is valuable.",
+    "status": "completed"
+  },
+  {
+    "Id": 4,
+    "employeeId": "4",
+    "reviewerId": "1",
+    "period": "Q4 2023",
+    "ratings": {
+      "technical": 4.3,
+      "reliability": 4.8,
+      "innovation": 4.0,
+      "communication": 3.9,
+      "overall": 4.25
+    },
+    "comments": "David's infrastructure management skills are excellent. He's reliable and ensures system stability. Could improve on documentation.",
+    "status": "completed"
+  },
+  {
+    "Id": 5,
+    "employeeId": "5",
+    "reviewerId": "2",
+    "period": "Q4 2023",
+    "ratings": {
+      "strategy": 4.4,
+      "execution": 4.2,
+      "creativity": 4.5,
+      "communication": 4.3,
+      "overall": 4.35
+    },
+    "comments": "Lisa's marketing campaigns have shown great results. Her strategic thinking and creative approach drive engagement effectively.",
+    "status": "pending"
+  },
+  {
+    "Id": 6,
+    "employeeId": "6",
+    "reviewerId": "5",
+    "period": "Q4 2023",
+    "ratings": {
+      "sales": 4.1,
+      "communication": 4.4,
+      "relationship": 4.6,
+      "targets": 3.8,
+      "overall": 4.23
+    },
+    "comments": "Robert builds strong client relationships and communicates effectively. Needs to focus on meeting quarterly targets consistently.",
+    "status": "pending"
+  }
+]
