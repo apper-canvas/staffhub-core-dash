@@ -14,12 +14,25 @@ const EmployeeList = () => {
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('cards');
+  const [filterCriteria, setFilterCriteria] = useState({
+    keywords: '',
+    department: '',
+    role: '',
+    status: ''
+  });
+  const [sortConfig, setSortConfig] = useState({
+    field: 'firstName',
+    direction: 'asc'
+  });
 
-  useEffect(() => {
+useEffect(() => {
     loadEmployees();
   }, []);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [employees, filterCriteria, sortConfig]);
 
   const loadEmployees = async () => {
     try {
@@ -27,7 +40,6 @@ const EmployeeList = () => {
       setError('');
       const data = await employeeService.getAll();
       setEmployees(data);
-      setFilteredEmployees(data);
     } catch (err) {
       setError(err.message);
       toast.error('Failed to load employees');
@@ -36,19 +48,45 @@ const EmployeeList = () => {
     }
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setFilteredEmployees(employees);
-    } else {
-      const filtered = employees.filter(emp => 
-        emp.firstName.toLowerCase().includes(query.toLowerCase()) ||
-        emp.lastName.toLowerCase().includes(query.toLowerCase()) ||
-        emp.email.toLowerCase().includes(query.toLowerCase()) ||
-        emp.role.toLowerCase().includes(query.toLowerCase())
+  const applyFiltersAndSort = async () => {
+    try {
+      const filteredAndSorted = await employeeService.filterAndSort(
+        employees,
+        filterCriteria,
+        sortConfig
       );
-      setFilteredEmployees(filtered);
+      setFilteredEmployees(filteredAndSorted);
+    } catch (err) {
+      setFilteredEmployees(employees);
     }
+  };
+
+const handleFilter = (newFilters) => {
+    setFilterCriteria(newFilters);
+  };
+
+  const handleSort = (field) => {
+    setSortConfig(prev => ({
+      field,
+      direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const clearFilters = () => {
+    setFilterCriteria({
+      keywords: '',
+      department: '',
+      role: '',
+      status: ''
+    });
+    setSortConfig({
+      field: 'firstName',
+      direction: 'asc'
+    });
+  };
+
+  const getUniqueValues = (field) => {
+    return [...new Set(employees.map(emp => emp[field]).filter(Boolean))];
   };
 
   const handleDelete = async (employee) => {
@@ -67,15 +105,86 @@ const EmployeeList = () => {
   if (loading) return <Loading type="cards" />;
   if (error) return <Error message={error} onRetry={loadEmployees} />;
 
-  return (
+return (
     <div className="space-y-6">
+      <SearchBar 
+        filterCriteria={filterCriteria}
+        sortConfig={sortConfig}
+        onFilter={handleFilter}
+        onSort={handleSort}
+        onClear={clearFilters}
+        departments={getUniqueValues('department')}
+        roles={getUniqueValues('role')}
+        statuses={getUniqueValues('status')}
+      />
+      
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <SearchBar 
-          placeholder="Search employees..." 
-          onSearch={handleSearch}
-          className="flex-1 max-w-md"
-        />
         <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-600">
+            {filteredEmployees.length} employee{filteredEmployees.length !== 1 ? 's' : ''}
+          </span>
+          {(filterCriteria.keywords || filterCriteria.department || filterCriteria.role || filterCriteria.status) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="text-xs"
+            >
+              <ApperIcon name="X" className="w-3 h-3 mr-1" />
+              Clear filters
+            </Button>
+          )}
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
+            <span className="text-sm text-gray-600">Sort:</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleSort('firstName')}
+              className="text-xs"
+            >
+              Name
+              {sortConfig.field === 'firstName' && (
+                <ApperIcon 
+                  name={sortConfig.direction === 'asc' ? 'ChevronUp' : 'ChevronDown'} 
+                  className="w-3 h-3 ml-1" 
+                />
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleSort('department')}
+              className="text-xs"
+            >
+              Department
+              {sortConfig.field === 'department' && (
+                <ApperIcon 
+                  name={sortConfig.direction === 'asc' ? 'ChevronUp' : 'ChevronDown'} 
+                  className="w-3 h-3 ml-1" 
+                />
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleSort('startDate')}
+              className="text-xs"
+            >
+              Hire Date
+              {sortConfig.field === 'startDate' && (
+                <ApperIcon 
+                  name={sortConfig.direction === 'asc' ? 'ChevronUp' : 'ChevronDown'} 
+                  className="w-3 h-3 ml-1" 
+                />
+              )}
+            </Button>
+          </div>
+          
+          <div className="h-4 w-px bg-gray-300"></div>
+          
           <Button
             variant={viewMode === 'cards' ? 'primary' : 'outline'}
             size="sm"
@@ -93,11 +202,15 @@ const EmployeeList = () => {
         </div>
       </div>
 
-      {filteredEmployees.length === 0 ? (
+{filteredEmployees.length === 0 ? (
         <Empty 
           icon="Users"
           title="No employees found"
-          description={searchQuery ? "No employees match your search criteria." : "Get started by adding your first employee."}
+          description={
+            (filterCriteria.keywords || filterCriteria.department || filterCriteria.role || filterCriteria.status) 
+              ? "No employees match your filter criteria." 
+              : "Get started by adding your first employee."
+          }
           actionLabel="Add Employee"
           onAction={() => toast.info('Add employee functionality coming soon!')}
         />
