@@ -99,13 +99,13 @@ const Departments = () => {
                   <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <img
-                        src={manager.photoUrl}
-                        alt={`${manager.firstName} ${manager.lastName}`}
+src={manager.photo_url}
+                        alt={`${manager.first_name} ${manager.last_name}`}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>
                         <p className="font-medium text-gray-900">
-                          {manager.firstName} {manager.lastName}
+                          {manager.first_name} {manager.last_name}
                         </p>
                         <p className="text-sm text-gray-600">Department Manager</p>
                       </div>
@@ -122,12 +122,12 @@ const Departments = () => {
                       {departmentEmployees.slice(0, 3).map(employee => (
                         <div key={employee.Id} className="flex items-center space-x-1">
                           <img
-                            src={employee.photoUrl}
-                            alt={`${employee.firstName} ${employee.lastName}`}
+src={employee.photo_url}
+                            alt={`${employee.first_name} ${employee.last_name}`}
                             className="w-6 h-6 rounded-full object-cover"
                           />
                           <span className="text-sm text-gray-700">
-                            {employee.firstName}
+                            {employee.first_name}
                           </span>
                         </div>
                       ))}

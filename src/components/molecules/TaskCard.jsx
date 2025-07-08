@@ -68,20 +68,20 @@ const TaskCard = ({ task, employee, onEdit, onDelete, onUpdateStatus }) => {
             </Badge>
           </div>
           <div className="text-sm text-gray-500">
-            Due: {format(new Date(task.dueDate), 'MMM dd, yyyy')}
+Due: {format(new Date(task.due_date), 'MMM dd, yyyy')}
           </div>
         </div>
 
         {employee && (
           <div className="flex items-center space-x-3 pt-3 border-t border-gray-200">
             <img
-              src={employee.photoUrl}
-              alt={`${employee.firstName} ${employee.lastName}`}
+src={employee.photo_url}
+              alt={`${employee.first_name} ${employee.last_name}`}
               className="w-8 h-8 rounded-full object-cover"
             />
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-900">
-                {employee.firstName} {employee.lastName}
+                {employee.first_name} {employee.last_name}
               </p>
               <p className="text-xs text-gray-500">{employee.role}</p>
             </div>

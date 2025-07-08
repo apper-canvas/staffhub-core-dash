@@ -69,7 +69,7 @@ const TaskList = () => {
     setFilteredTasks(filtered);
   };
 
-  const handleUpdateStatus = async (task, newStatus) => {
+const handleUpdateStatus = async (task, newStatus) => {
     try {
       await taskService.update(task.Id, { status: newStatus });
       setTasks(prev => prev.map(t => 
@@ -97,7 +97,7 @@ const TaskList = () => {
     }
   };
 
-  const getEmployeeById = (employeeId) => {
+const getEmployeeById = (employeeId) => {
     return employees.find(emp => emp.Id === parseInt(employeeId));
   };
 
@@ -158,7 +158,7 @@ const TaskList = () => {
             <TaskCard 
               key={task.Id}
               task={task}
-              employee={getEmployeeById(task.assigneeId)}
+employee={getEmployeeById(task.assignee_id)}
               onEdit={() => toast.info('Edit task functionality coming soon!')}
               onDelete={handleDelete}
               onUpdateStatus={handleUpdateStatus}

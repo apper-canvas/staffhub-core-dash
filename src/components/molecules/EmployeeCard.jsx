@@ -67,7 +67,10 @@ const EmployeeCard = ({ employee, onView, onChart, onEdit, onDelete, onEmployeeU
     }
   };
 
-  const customFields = currentEmployee?.customFields || [];
+const customFields = currentEmployee?.custom_fields ? 
+    (typeof currentEmployee.custom_fields === 'string' ? 
+      JSON.parse(currentEmployee.custom_fields) : 
+      currentEmployee.custom_fields) : [];
   const fieldsWithValues = customFields.filter(field => 
     field.value !== null && field.value !== undefined && field.value !== ''
   );
@@ -77,9 +80,9 @@ const EmployeeCard = ({ employee, onView, onChart, onEdit, onDelete, onEmployeeU
       <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:scale-105">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <img
-              src={currentEmployee.photoUrl}
-              alt={`${currentEmployee.firstName} ${currentEmployee.lastName}`}
+<img
+              src={currentEmployee.photo_url}
+              alt={`${currentEmployee.first_name} ${currentEmployee.last_name}`}
               className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
             />
             <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
@@ -88,7 +91,7 @@ const EmployeeCard = ({ employee, onView, onChart, onEdit, onDelete, onEmployeeU
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-gray-900 truncate">
-              {currentEmployee.firstName} {currentEmployee.lastName}
+              {currentEmployee.first_name} {currentEmployee.last_name}
             </h3>
             <p className="text-sm text-gray-600 truncate">{currentEmployee.role}</p>
             <p className="text-sm text-gray-500 truncate">{currentEmployee.email}</p>

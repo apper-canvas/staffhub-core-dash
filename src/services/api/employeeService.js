@@ -1,320 +1,494 @@
-import employeesData from "@/services/mockData/employees.json";
-
 class EmployeeService {
   constructor() {
-    this.employees = [...employeesData];
+    this.apperClient = null;
+    this.initClient();
+  }
+
+  initClient() {
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
   }
 
   async getAll() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([...this.employees]);
-      }, 300);
-    });
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "first_name" } },
+          { field: { Name: "last_name" } },
+          { field: { Name: "email" } },
+          { field: { Name: "phone" } },
+          { field: { Name: "role" } },
+          { field: { Name: "start_date" } },
+          { field: { Name: "status" } },
+          { field: { Name: "photo_url" } },
+          { field: { Name: "custom_fields" } },
+          { field: { Name: "department_id" } }
+        ]
+      };
+      
+      const response = await this.apperClient.fetchRecords('employee', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching employees:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getById(id) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const employee = this.employees.find(emp => emp.Id === parseInt(id));
-        if (employee) {
-          resolve({ ...employee });
-        } else {
-          reject(new Error('Employee not found'));
-        }
-      }, 200);
-    });
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "first_name" } },
+          { field: { Name: "last_name" } },
+          { field: { Name: "email" } },
+          { field: { Name: "phone" } },
+          { field: { Name: "role" } },
+          { field: { Name: "start_date" } },
+          { field: { Name: "status" } },
+          { field: { Name: "photo_url" } },
+          { field: { Name: "custom_fields" } },
+          { field: { Name: "department_id" } }
+        ]
+      };
+      
+      const response = await this.apperClient.getRecordById('employee', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching employee with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
-async create(employee) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!employee || typeof employee !== 'object') {
-          reject(new Error('Invalid employee data'));
-          return;
+  async create(employee) {
+    try {
+      const params = {
+        records: [{
+          Name: employee.Name || `${employee.first_name} ${employee.last_name}`,
+          first_name: employee.first_name,
+          last_name: employee.last_name,
+          email: employee.email,
+          phone: employee.phone,
+          role: employee.role,
+          start_date: employee.start_date,
+          status: employee.status,
+          photo_url: employee.photo_url,
+          custom_fields: employee.custom_fields,
+          department_id: parseInt(employee.department_id)
+        }]
+      };
+      
+      const response = await this.apperClient.createRecord('employee', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} employees:${JSON.stringify(failedRecords)}`);
         }
         
-        const newEmployee = {
-          ...employee,
-          Id: Date.now(),
-          createdAt: new Date().toISOString()
-        };
-        
-        this.employees.push(newEmployee);
-        resolve({ ...newEmployee });
-      }, 300);
-    });
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+      
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating employee:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async update(id, updates) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const index = this.employees.findIndex(emp => emp.Id === parseInt(id));
-        if (index !== -1) {
-          this.employees[index] = { ...this.employees[index], ...updates };
-          resolve({ ...this.employees[index] });
-        } else {
-          reject(new Error('Employee not found'));
+    try {
+      const updateData = {
+        Id: parseInt(id)
+      };
+      
+      // Only include updateable fields
+      if (updates.Name !== undefined) updateData.Name = updates.Name;
+      if (updates.first_name !== undefined) updateData.first_name = updates.first_name;
+      if (updates.last_name !== undefined) updateData.last_name = updates.last_name;
+      if (updates.email !== undefined) updateData.email = updates.email;
+      if (updates.phone !== undefined) updateData.phone = updates.phone;
+      if (updates.role !== undefined) updateData.role = updates.role;
+      if (updates.start_date !== undefined) updateData.start_date = updates.start_date;
+      if (updates.status !== undefined) updateData.status = updates.status;
+      if (updates.photo_url !== undefined) updateData.photo_url = updates.photo_url;
+      if (updates.custom_fields !== undefined) updateData.custom_fields = updates.custom_fields;
+      if (updates.department_id !== undefined) updateData.department_id = parseInt(updates.department_id);
+      
+      const params = {
+        records: [updateData]
+      };
+      
+      const response = await this.apperClient.updateRecord('employee', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update ${failedUpdates.length} employees:${JSON.stringify(failedUpdates)}`);
         }
-      }, 300);
-    });
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+      
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating employee:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async delete(id) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const index = this.employees.findIndex(emp => emp.Id === parseInt(id));
-        if (index !== -1) {
-          const deletedEmployee = this.employees.splice(index, 1)[0];
-          resolve({ ...deletedEmployee });
-        } else {
-          reject(new Error('Employee not found'));
-        }
-      }, 250);
-    });
-  }
-
-async search(query) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!query || typeof query !== 'string') {
-          resolve([...this.employees]);
-          return;
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await this.apperClient.deleteRecord('employee', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete ${failedDeletions.length} employees:${JSON.stringify(failedDeletions)}`);
         }
         
-        const filteredEmployees = this.employees.filter(emp => 
-          (emp.firstName && emp.firstName.toLowerCase().includes(query.toLowerCase())) ||
-          (emp.lastName && emp.lastName.toLowerCase().includes(query.toLowerCase())) ||
-          (emp.email && emp.email.toLowerCase().includes(query.toLowerCase())) ||
-          (emp.role && emp.role.toLowerCase().includes(query.toLowerCase()))
-        );
-        resolve([...filteredEmployees]);
-      }, 200);
-    });
+        return failedDeletions.length === 0;
+      }
+      
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting employee:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
+    }
+  }
+
+  async search(query) {
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "first_name" } },
+          { field: { Name: "last_name" } },
+          { field: { Name: "email" } },
+          { field: { Name: "role" } },
+          { field: { Name: "status" } },
+          { field: { Name: "department_id" } }
+        ],
+        whereGroups: [{
+          operator: "OR",
+          subGroups: [{
+            operator: "OR",
+            conditions: [
+              {
+                fieldName: "first_name",
+                operator: "Contains",
+                values: [query],
+                include: true
+              },
+              {
+                fieldName: "last_name", 
+                operator: "Contains",
+                values: [query],
+                include: true
+              },
+              {
+                fieldName: "email",
+                operator: "Contains", 
+                values: [query],
+                include: true
+              },
+              {
+                fieldName: "role",
+                operator: "Contains",
+                values: [query],
+                include: true
+              }
+            ]
+          }]
+        }]
+      };
+      
+      const response = await this.apperClient.fetchRecords('employee', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error searching employees:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async filterAndSort(employees, filterCriteria, sortConfig) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        try {
-          if (!Array.isArray(employees)) {
-            reject(new Error('Invalid employees data'));
-            return;
-          }
-          
-          let filtered = [...employees];
+    // For simplicity, we'll implement client-side filtering and sorting
+    // In a production app, this would be done server-side with proper ApperClient queries
+    try {
+      let filtered = [...employees];
 
-          // Apply filters
-          if (filterCriteria && filterCriteria.keywords) {
-            const keywords = filterCriteria.keywords.toLowerCase();
-            filtered = filtered.filter(emp => 
-              (emp.firstName && emp.firstName.toLowerCase().includes(keywords)) ||
-              (emp.lastName && emp.lastName.toLowerCase().includes(keywords)) ||
-              (emp.email && emp.email.toLowerCase().includes(keywords)) ||
-              (emp.role && emp.role.toLowerCase().includes(keywords))
-            );
-          }
+      if (filterCriteria && filterCriteria.keywords) {
+        const keywords = filterCriteria.keywords.toLowerCase();
+        filtered = filtered.filter(emp => 
+          (emp.first_name && emp.first_name.toLowerCase().includes(keywords)) ||
+          (emp.last_name && emp.last_name.toLowerCase().includes(keywords)) ||
+          (emp.email && emp.email.toLowerCase().includes(keywords)) ||
+          (emp.role && emp.role.toLowerCase().includes(keywords))
+        );
+      }
 
-          if (filterCriteria && filterCriteria.department) {
-            filtered = filtered.filter(emp => emp.department === filterCriteria.department);
-          }
+      if (filterCriteria && filterCriteria.department) {
+        filtered = filtered.filter(emp => emp.department_id === filterCriteria.department);
+      }
 
-          if (filterCriteria && filterCriteria.role) {
-            filtered = filtered.filter(emp => emp.role === filterCriteria.role);
-          }
+      if (filterCriteria && filterCriteria.role) {
+        filtered = filtered.filter(emp => emp.role === filterCriteria.role);
+      }
 
-          if (filterCriteria && filterCriteria.status) {
-            filtered = filtered.filter(emp => emp.status === filterCriteria.status);
-          }
+      if (filterCriteria && filterCriteria.status) {
+        filtered = filtered.filter(emp => emp.status === filterCriteria.status);
+      }
 
-          // Apply sorting
-          if (sortConfig && sortConfig.field) {
-            filtered.sort((a, b) => {
-              let aValue = a[sortConfig.field];
-              let bValue = b[sortConfig.field];
+      if (sortConfig && sortConfig.field) {
+        filtered.sort((a, b) => {
+          let aValue = a[sortConfig.field];
+          let bValue = b[sortConfig.field];
 
-              // Handle name sorting (combine first and last name)
-              if (sortConfig.field === 'firstName') {
-                aValue = `${a.firstName || ''} ${a.lastName || ''}`;
-                bValue = `${b.firstName || ''} ${b.lastName || ''}`;
-              }
-
-              // Handle date sorting
-              if (sortConfig.field === 'startDate') {
-                aValue = new Date(aValue);
-                bValue = new Date(bValue);
-              }
-
-              // String comparison
-              if (typeof aValue === 'string' && typeof bValue === 'string') {
-                aValue = aValue.toLowerCase();
-                bValue = bValue.toLowerCase();
-              }
-
-              if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-              if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-              return 0;
-            });
+          if (sortConfig.field === 'firstName') {
+            aValue = `${a.first_name || ''} ${a.last_name || ''}`;
+            bValue = `${b.first_name || ''} ${b.last_name || ''}`;
           }
 
-          resolve(filtered);
-        } catch (error) {
-          reject(new Error('Failed to filter and sort employees'));
-        }
-      }, 200);
-    });
+          if (sortConfig.field === 'startDate') {
+            aValue = new Date(a.start_date);
+            bValue = new Date(b.start_date);
+          }
+
+          if (typeof aValue === 'string' && typeof bValue === 'string') {
+            aValue = aValue.toLowerCase();
+            bValue = bValue.toLowerCase();
+          }
+
+          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+          return 0;
+        });
+      }
+
+      return filtered;
+    } catch (error) {
+      console.error('Failed to filter and sort employees:', error);
+      return employees;
+    }
   }
 
   async getByDepartment(departmentId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!departmentId) {
-          resolve([]);
-          return;
-}
-        
-        const employees = this.employees.filter(emp => emp.departmentId === departmentId.toString());
-        resolve([...employees]);
-      }, 250);
-    });
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "first_name" } },
+          { field: { Name: "last_name" } },
+          { field: { Name: "email" } },
+          { field: { Name: "role" } },
+          { field: { Name: "status" } },
+          { field: { Name: "photo_url" } },
+          { field: { Name: "department_id" } }
+        ],
+        where: [{
+          FieldName: "department_id",
+          Operator: "EqualTo",
+          Values: [parseInt(departmentId)]
+        }]
+      };
+      
+      const response = await this.apperClient.fetchRecords('employee', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching employees by department:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
+  // Custom field methods remain client-side for now
   async addCustomField(employeeId, fieldDefinition) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const index = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
-        if (index === -1) {
-          reject(new Error('Employee not found'));
-          return;
-        }
+    const employee = await this.getById(employeeId);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
 
-        const employee = this.employees[index];
-        if (!employee.customFields) {
-          employee.customFields = [];
-        }
+    let customFields = [];
+    try {
+      customFields = employee.custom_fields ? JSON.parse(employee.custom_fields) : [];
+    } catch (e) {
+      customFields = [];
+    }
 
-        // Check if field name already exists
-        if (employee.customFields.some(field => field.name === fieldDefinition.name)) {
-          reject(new Error('Field name already exists'));
-          return;
-        }
+    if (customFields.some(field => field.name === fieldDefinition.name)) {
+      throw new Error('Field name already exists');
+    }
 
-        const newField = {
-          ...fieldDefinition,
-          id: Date.now().toString(),
-          value: fieldDefinition.type === 'boolean' ? false : 
-                 fieldDefinition.type === 'multiselect' ? [] : ''
-        };
+    const newField = {
+      ...fieldDefinition,
+      id: Date.now().toString(),
+      value: fieldDefinition.type === 'boolean' ? false : 
+             fieldDefinition.type === 'multiselect' ? [] : ''
+    };
 
-        employee.customFields.push(newField);
-        resolve({ ...employee });
-      }, 300);
-    });
+    customFields.push(newField);
+    
+    return await this.update(employeeId, { custom_fields: JSON.stringify(customFields) });
   }
 
   async updateCustomField(employeeId, fieldId, updates) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const employeeIndex = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
-        if (employeeIndex === -1) {
-          reject(new Error('Employee not found'));
-          return;
-        }
+    const employee = await this.getById(employeeId);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
 
-        const employee = this.employees[employeeIndex];
-        if (!employee.customFields) {
-          reject(new Error('No custom fields found'));
-          return;
-        }
+    let customFields = [];
+    try {
+      customFields = employee.custom_fields ? JSON.parse(employee.custom_fields) : [];
+    } catch (e) {
+      throw new Error('No custom fields found');
+    }
 
-        const fieldIndex = employee.customFields.findIndex(field => field.id === fieldId);
-        if (fieldIndex === -1) {
-          reject(new Error('Custom field not found'));
-          return;
-        }
+    const fieldIndex = customFields.findIndex(field => field.id === fieldId);
+    if (fieldIndex === -1) {
+      throw new Error('Custom field not found');
+    }
 
-        // Check if updating name and it conflicts with existing
-        if (updates.name && updates.name !== employee.customFields[fieldIndex].name) {
-          if (employee.customFields.some(field => field.name === updates.name && field.id !== fieldId)) {
-            reject(new Error('Field name already exists'));
-            return;
-          }
-        }
+    if (updates.name && updates.name !== customFields[fieldIndex].name) {
+      if (customFields.some(field => field.name === updates.name && field.id !== fieldId)) {
+        throw new Error('Field name already exists');
+      }
+    }
 
-        employee.customFields[fieldIndex] = { ...employee.customFields[fieldIndex], ...updates };
-        resolve({ ...employee });
-      }, 300);
-    });
+    customFields[fieldIndex] = { ...customFields[fieldIndex], ...updates };
+    
+    return await this.update(employeeId, { custom_fields: JSON.stringify(customFields) });
   }
 
   async removeCustomField(employeeId, fieldId) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const employeeIndex = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
-        if (employeeIndex === -1) {
-          reject(new Error('Employee not found'));
-          return;
-        }
+    const employee = await this.getById(employeeId);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
 
-        const employee = this.employees[employeeIndex];
-        if (!employee.customFields) {
-          reject(new Error('No custom fields found'));
-          return;
-        }
+    let customFields = [];
+    try {
+      customFields = employee.custom_fields ? JSON.parse(employee.custom_fields) : [];
+    } catch (e) {
+      throw new Error('No custom fields found');
+    }
 
-        const fieldIndex = employee.customFields.findIndex(field => field.id === fieldId);
-        if (fieldIndex === -1) {
-          reject(new Error('Custom field not found'));
-          return;
-        }
+    const fieldIndex = customFields.findIndex(field => field.id === fieldId);
+    if (fieldIndex === -1) {
+      throw new Error('Custom field not found');
+    }
 
-        employee.customFields.splice(fieldIndex, 1);
-        resolve({ ...employee });
-      }, 250);
-    });
+    customFields.splice(fieldIndex, 1);
+    
+    return await this.update(employeeId, { custom_fields: JSON.stringify(customFields) });
   }
 
   async updateFieldValue(employeeId, fieldId, value) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const employeeIndex = this.employees.findIndex(emp => emp.Id === parseInt(employeeId));
-        if (employeeIndex === -1) {
-          reject(new Error('Employee not found'));
-          return;
-        }
+    const employee = await this.getById(employeeId);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
 
-        const employee = this.employees[employeeIndex];
-        if (!employee.customFields) {
-          reject(new Error('No custom fields found'));
-          return;
-        }
+    let customFields = [];
+    try {
+      customFields = employee.custom_fields ? JSON.parse(employee.custom_fields) : [];
+    } catch (e) {
+      throw new Error('No custom fields found');
+    }
 
-        const fieldIndex = employee.customFields.findIndex(field => field.id === fieldId);
-        if (fieldIndex === -1) {
-          reject(new Error('Custom field not found'));
-          return;
-        }
+    const fieldIndex = customFields.findIndex(field => field.id === fieldId);
+    if (fieldIndex === -1) {
+      throw new Error('Custom field not found');
+    }
 
-        employee.customFields[fieldIndex].value = value;
-        resolve({ ...employee });
-      }, 200);
-    });
+    customFields[fieldIndex].value = value;
+    
+    return await this.update(employeeId, { custom_fields: JSON.stringify(customFields) });
   }
 
-async getEmployeeWithFields(employeeId) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const employee = this.employees.find(emp => emp.Id === parseInt(employeeId));
-        if (employee) {
-          resolve({ ...employee });
-        } else {
-          reject(new Error('Employee not found'));
-        }
-      }, 200);
-    });
+  async getEmployeeWithFields(employeeId) {
+    return await this.getById(employeeId);
   }
 }
 
-// Create and export singleton instance
 const employeeService = new EmployeeService();
 export default employeeService;

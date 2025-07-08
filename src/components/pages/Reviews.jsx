@@ -90,13 +90,13 @@ const Reviews = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={employee.photoUrl}
-                      alt={`${employee.firstName} ${employee.lastName}`}
+src={employee.photo_url}
+                      alt={`${employee.first_name} ${employee.last_name}`}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {employee.firstName} {employee.lastName}
+                        {employee.first_name} {employee.last_name}
                       </h3>
                       <p className="text-sm text-gray-600">{employee.role}</p>
                     </div>
@@ -115,8 +115,8 @@ const Reviews = () => {
                   {reviewer && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Reviewer</span>
-                      <span className="text-sm font-medium text-gray-900">
-                        {reviewer.firstName} {reviewer.lastName}
+<span className="text-sm font-medium text-gray-900">
+                        {reviewer.first_name} {reviewer.last_name}
                       </span>
                     </div>
                   )}

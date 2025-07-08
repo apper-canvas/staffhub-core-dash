@@ -7,10 +7,6 @@ import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
 import SearchBar from "@/components/molecules/SearchBar";
 import EmployeeCard from "@/components/molecules/EmployeeCard";
-import departments from "@/services/mockData/departments.json";
-import employees from "@/services/mockData/employees.json";
-import tasks from "@/services/mockData/tasks.json";
-import reviews from "@/services/mockData/reviews.json";
 import employeeService from "@/services/api/employeeService";
 
 const EmployeeList = () => {
@@ -32,7 +28,7 @@ const EmployeeList = () => {
   const [roles, setRoles] = useState([]);
   const [statuses, setStatuses] = useState([]);
 
-  useEffect(() => {
+useEffect(() => {
     loadEmployees()
   }, [])
 
@@ -45,9 +41,9 @@ const EmployeeList = () => {
       setLoading(true);
       setError('');
       const data = await employeeService.getAll();
-      setEmployees(data);
+      setEmployees(data || []);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to load employees');
       toast.error('Failed to load employees');
     } finally {
       setLoading(false);
