@@ -1,13 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import EmployeeList from '@/components/organisms/EmployeeList';
+import PerformanceChart from '@/components/molecules/PerformanceChart';
 import Button from '@/components/atoms/Button';
 import ApperIcon from '@/components/ApperIcon';
 import { toast } from 'react-toastify';
 
 const Employees = () => {
+  const [currentView, setCurrentView] = useState('list');
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
   const handleAddEmployee = () => {
     toast.info('Add employee functionality coming soon!');
   };
+
+  const handleViewChart = (employee) => {
+    setSelectedEmployee(employee);
+    setCurrentView('chart');
+  };
+
+  const handleBackToList = () => {
+    setCurrentView('list');
+    setSelectedEmployee(null);
+  };
+
+if (currentView === 'chart' && selectedEmployee) {
+    return (
+      <PerformanceChart
+        employee={selectedEmployee}
+        onBack={handleBackToList}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -22,7 +45,7 @@ const Employees = () => {
         </Button>
       </div>
 
-      <EmployeeList />
+      <EmployeeList onViewChart={handleViewChart} />
     </div>
   );
 };

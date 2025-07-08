@@ -4,7 +4,7 @@ import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
 import ApperIcon from '@/components/ApperIcon';
 
-const EmployeeCard = ({ employee, onView, onEdit, onDelete }) => {
+const EmployeeCard = ({ employee, onView, onChart, onEdit, onDelete }) => {
   const getStatusVariant = (status) => {
     switch (status) {
       case 'active':
@@ -43,13 +43,20 @@ const EmployeeCard = ({ employee, onView, onEdit, onDelete }) => {
           <Badge variant={getStatusVariant(employee.status)}>
             {employee.status}
           </Badge>
-          <div className="flex items-center space-x-2">
+<div className="flex items-center space-x-2">
             <Button
               size="sm"
               variant="ghost"
               onClick={() => onView && onView(employee)}
             >
               <ApperIcon name="Eye" className="w-4 h-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => onChart && onChart(employee)}
+            >
+              <ApperIcon name="TrendingUp" className="w-4 h-4" />
             </Button>
             <Button
               size="sm"
