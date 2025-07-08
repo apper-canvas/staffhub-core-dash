@@ -1,5 +1,3 @@
-import React from "react";
-import Error from "@/components/ui/Error";
 import employeesData from "@/services/mockData/employees.json";
 
 class EmployeeService {
@@ -36,21 +34,15 @@ async create(employee) {
           return;
         }
         
-        try {
-          const employeeIds = this.employees.map(emp => emp.Id).filter(id => !isNaN(id));
-          const maxId = employeeIds.length > 0 ? Math.max(...employeeIds) : 0;
-          
-          const newEmployee = {
-            ...employee,
-            Id: maxId + 1,
-            startDate: new Date().toISOString().split('T')[0]
-          };
-          this.employees.push(newEmployee);
-          resolve({ ...newEmployee });
-        } catch (error) {
-          reject(new Error('Failed to create employee'));
-        }
-      }, 400);
+        const newEmployee = {
+          ...employee,
+          Id: Date.now(),
+          createdAt: new Date().toISOString()
+        };
+        
+        this.employees.push(newEmployee);
+        resolve({ ...newEmployee });
+      }, 300);
     });
   }
 
@@ -179,9 +171,9 @@ async search(query) {
         if (!departmentId) {
           resolve([]);
           return;
-        }
+}
         
-const employees = this.employees.filter(emp => emp.departmentId === departmentId.toString());
+        const employees = this.employees.filter(emp => emp.departmentId === departmentId.toString());
         resolve([...employees]);
       }, 250);
     });

@@ -1,37 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import EmployeeCard from '@/components/molecules/EmployeeCard';
-import SearchBar from '@/components/molecules/SearchBar';
-import Button from '@/components/atoms/Button';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import ApperIcon from '@/components/ApperIcon';
-import employeeService from '@/services/api/employeeService';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import SearchBar from "@/components/molecules/SearchBar";
+import EmployeeCard from "@/components/molecules/EmployeeCard";
+import departments from "@/services/mockData/departments.json";
+import employees from "@/services/mockData/employees.json";
+import tasks from "@/services/mockData/tasks.json";
+import reviews from "@/services/mockData/reviews.json";
+import employeeService from "@/services/api/employeeService";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
-  const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [viewMode, setViewMode] = useState('cards');
+  const [error, setError] = useState(null);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [filterCriteria, setFilterCriteria] = useState({
     keywords: '',
     department: '',
     role: '',
-    status: ''
+    status: '',
+    startDate: '',
+    endDate: ''
   });
-  const [sortConfig, setSortConfig] = useState({
-    field: 'firstName',
-    direction: 'asc'
-  });
-
-useEffect(() => {
-    loadEmployees();
-  }, []);
+  const [sortConfig, setSortConfig] = useState({ field: '', direction: 'asc' });
+  const [viewMode, setViewMode] = useState('cards');
+  const [departments, setDepartments] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [statuses, setStatuses] = useState([]);
 
   useEffect(() => {
-    applyFiltersAndSort();
+    loadEmployees()
+  }, [])
+
+  useEffect(() => {
+    applyFiltersAndSort()
   }, [employees, filterCriteria, sortConfig]);
 
   const loadEmployees = async () => {
@@ -48,7 +54,7 @@ useEffect(() => {
     }
   };
 
-  const applyFiltersAndSort = async () => {
+const applyFiltersAndSort = async () => {
     try {
       const filteredAndSorted = await employeeService.filterAndSort(
         employees,
@@ -57,32 +63,46 @@ useEffect(() => {
       );
       setFilteredEmployees(filteredAndSorted);
     } catch (err) {
+      console.error('Error filtering and sorting employees:', err);
       setFilteredEmployees(employees);
     }
   };
-
 const handleFilter = (newFilters) => {
-    setFilterCriteria(newFilters);
-  };
+    // Ensure we have valid filter criteria with defaults
+    const safeFilters = {
+      keywords: '',
+      department: '',
+      role: '',
+      status: '',
+      startDate: '',
+      endDate: '',
+      ...newFilters
+    }
+    setFilterCriteria(safeFilters)
+  }
 
   const handleSort = (field) => {
+    if (!field) {
+      setSortConfig({ field: '', direction: 'asc' })
+      return
+    }
+    
     setSortConfig(prev => ({
       field,
       direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc'
-    }));
-  };
+    }))
+  }
 
-  const clearFilters = () => {
+const clearFilters = () => {
     setFilterCriteria({
       keywords: '',
       department: '',
       role: '',
-      status: ''
+      status: '',
+      startDate: '',
+      endDate: ''
     });
-    setSortConfig({
-      field: 'firstName',
-      direction: 'asc'
-    });
+    setSortConfig({ field: '', direction: 'asc' });
   };
 
   const getUniqueValues = (field) => {
